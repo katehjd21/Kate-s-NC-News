@@ -26,3 +26,26 @@ describe("GET /api", () => {
       });
   });
 });
+
+describe("GET /api/topics", () => {
+  test("200: responds with an array of all topics each with a property of slug and description", () => {
+    return request(app)
+      .get("/api/topics")
+      .then(({ body }) => {
+        expect(body.topics.length).toBe(3);
+        body.topics.forEach((topic) => {
+          expect(topic).toMatchObject({
+            slug: expect.any(String),
+            description: expect.any(String),
+          });
+        });
+      });
+  });
+  test("404: responds with an appropriate error message when given an invalid endpoint", () => {
+    return request(app)
+      .get("/api/topic")
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
+      });
+  });
+});
