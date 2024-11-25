@@ -10,9 +10,8 @@ If you have cloned this repo to your local, you will need to complete a couple o
 - .env.test => PGDATABASE=nc_news_test
   -.env.development => PGDATABASE=nc-news
 
-3. Create a .gitignore file if you haven't done so already. Within these, type node_modules and .env.\* (or as separate files .env.test & .env.development) which will insure that these files are ignored by GitHub.
-4. Once you have created these files and inserted the PGDATABASEs, run npm install in your terminal.
-5. Now you should all be setup to begin!
+3. Once you have created these files and inserted the PGDATABASEs, run npm install in your terminal.
+4. Now you should all be setup to begin!
 
 ---
 
