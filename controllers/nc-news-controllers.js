@@ -7,6 +7,7 @@ const {
 const {
   fetchCommentsByArticleId,
   checkArticleIdExists,
+  postCommentForArticle,
 } = require("../models/comments.models");
 
 exports.getApi = (req, res) => {
@@ -33,7 +34,6 @@ exports.getArticleById = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
   findArticles()
     .then((articles) => {
-      console.log(articles);
       res.status(200).send({ articles });
     })
     .catch(next);
@@ -50,6 +50,16 @@ exports.getCommentsByArticleId = (req, res, next) => {
   Promise.all(promises)
     .then(([comments]) => {
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.addCommentForArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  const comment = req.body;
+  postCommentForArticle(article_id, comment)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch(next);
 };

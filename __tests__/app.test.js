@@ -175,6 +175,49 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
+describe("POST /api/articles/:article_id/comments", () => {
+  const newComment = {
+    username: "lurker",
+    body: "Brilliant article! Definitely worth a read!",
+  };
+  test("201: responds with a newly posted comment for an article", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "Brilliant article! Definitely worth a read!",
+            article_id: 3,
+            author: "lurker",
+            votes: 0,
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("400: responds with an appropriate error message when the request body does not contain the correct fields", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({ rating: 5, writer: "Mr Smiley Face" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("400: responds with an appropriate error message when the request body contains the correct fields but the value of the field is invalid", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({ username: 5, body: true })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+});
+
 describe("General error handlers", () => {
   test("404: responds with an appropriate error message when given an invalid endpoint", () => {
     return request(app)

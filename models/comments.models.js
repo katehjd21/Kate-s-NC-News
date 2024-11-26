@@ -19,3 +19,13 @@ exports.checkArticleIdExists = (article_id) => {
       }
     });
 };
+
+exports.postCommentForArticle = (article_id, comment) => {
+  const queryString = `INSERT INTO comments(author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`;
+
+  const queryValue = [comment.username, comment.body, article_id];
+
+  return db.query(queryString, queryValue).then(({ rows }) => {
+    return rows[0];
+  });
+};
