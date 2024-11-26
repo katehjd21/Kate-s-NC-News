@@ -1,6 +1,9 @@
 const endpointsJson = require("../endpoints.json");
 const { findTopics } = require("../models/topics.models");
-const { retrieveArticleById } = require("../models/articles.models");
+const {
+  retrieveArticleById,
+  findArticles,
+} = require("../models/articles.models");
 
 exports.getApi = (req, res) => {
   res.status(200).send({ endpoints: endpointsJson });
@@ -19,6 +22,15 @@ exports.getArticleById = (req, res, next) => {
   retrieveArticleById(article_id)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch(next);
+};
+
+exports.getArticles = (req, res, next) => {
+  findArticles()
+    .then((articles) => {
+      console.log(articles);
+      res.status(200).send({ articles });
     })
     .catch(next);
 };
