@@ -3,6 +3,7 @@ const { findTopics } = require("../models/topics.models");
 const {
   retrieveArticleById,
   findArticles,
+  patchVoteByArticleId,
 } = require("../models/articles.models");
 const {
   fetchCommentsByArticleId,
@@ -60,6 +61,16 @@ exports.addCommentForArticle = (req, res, next) => {
   postCommentForArticle(article_id, comment)
     .then((comment) => {
       res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.updateVoteByArticleId = (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id } = req.params;
+  patchVoteByArticleId(inc_votes, article_id)
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch(next);
 };
