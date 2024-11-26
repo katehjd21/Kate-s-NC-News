@@ -4,6 +4,10 @@ const {
   retrieveArticleById,
   findArticles,
 } = require("../models/articles.models");
+const {
+  fetchCommentsByArticleId,
+  checkArticleIdExists,
+} = require("../models/comments.models");
 
 exports.getApi = (req, res) => {
   res.status(200).send({ endpoints: endpointsJson });
@@ -31,6 +35,21 @@ exports.getArticles = (req, res, next) => {
     .then((articles) => {
       console.log(articles);
       res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const promises = [fetchCommentsByArticleId(article_id)];
+
+  if (article_id) {
+    promises.push(checkArticleIdExists(article_id));
+  }
+
+  Promise.all(promises)
+    .then(([comments]) => {
+      res.status(200).send({ comments });
     })
     .catch(next);
 };

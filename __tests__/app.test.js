@@ -119,6 +119,62 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with an array of comments for the given article_id", () => {
+    return request(app)
+      .get("/api/articles/9/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(2);
+        body.comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("200: responds with an array of comments for the given article_id in descending order by date created (most recent first)", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(11);
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200: responds with an empty array if given an existing article_id but the article has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
+  test("400: responds with an appropriate error message when given an invalid id", () => {
+    return request(app)
+      .get("/api/articles/notAnId/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("404: responds with an appropriate error message when given a valid but non-existent id", () => {
+    return request(app)
+      .get("/api/articles/999999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
+      });
+  });
+});
+
 describe("General error handlers", () => {
   test("404: responds with an appropriate error message when given an invalid endpoint", () => {
     return request(app)
