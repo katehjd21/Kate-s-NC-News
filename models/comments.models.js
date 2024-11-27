@@ -29,3 +29,13 @@ exports.postCommentForArticle = (article_id, comment) => {
     return rows[0];
   });
 };
+
+exports.removeCommentByCommentId = (comment_id) => {
+  const queryString = `DELETE FROM comments WHERE comment_id = $1 RETURNING *;`;
+
+  const queryValue = [comment_id];
+
+  return db.query(queryString, queryValue).then(({ rows }) => {
+    console.log(rows[0]);
+  });
+};
