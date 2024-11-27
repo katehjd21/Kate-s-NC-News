@@ -301,6 +301,28 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: responds with a no content message when comment successfully deleted", () => {
+    return request(app).delete("/api/comments/3").expect(204);
+  });
+  test("404: responds with an appropriate error message when given a valid but non-existent id", () => {
+    return request(app)
+      .delete("/api/comments/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
+      });
+  });
+  test("400: responds with an appropriate error message when given an invalid id", () => {
+    return request(app)
+      .delete("/api/comments/notAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+});
+
 describe("General error handlers", () => {
   test("404: responds with an appropriate error message when given an invalid endpoint", () => {
     return request(app)

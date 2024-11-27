@@ -29,3 +29,15 @@ exports.postCommentForArticle = (article_id, comment) => {
     return rows[0];
   });
 };
+
+exports.removeCommentByCommentId = (comment_id) => {
+  const queryString = `DELETE FROM comments WHERE comment_id = $1 RETURNING *;`;
+
+  const queryValue = [comment_id];
+
+  return db.query(queryString, queryValue).then(({ rowCount }) => {
+    if (rowCount === 0) {
+      return Promise.reject({ status: 404, msg: "404: Not found" });
+    }
+  });
+};
