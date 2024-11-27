@@ -7,6 +7,7 @@ const {
   getArticles,
   getCommentsByArticleId,
   addCommentForArticle,
+  updateVoteByArticleId,
 } = require("./controllers/nc-news-controllers");
 const {
   psqlErrorHandler,
@@ -27,6 +28,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.post("/api/articles/:article_id/comments", addCommentForArticle);
+
+app.patch("/api/articles/:article_id", updateVoteByArticleId);
 
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "404: Not found" });

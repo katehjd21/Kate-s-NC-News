@@ -1,0 +1,6 @@
+You are now connected to database "nc_news_test" as user "katedrew".
+ votes 
+-------
+    89
+(1 row)
+
