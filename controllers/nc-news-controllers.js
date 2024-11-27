@@ -12,6 +12,8 @@ const {
   removeCommentByCommentId,
 } = require("../models/comments.models");
 
+const { findUsers } = require("../models/users.models");
+
 exports.getApi = (req, res) => {
   res.status(200).send({ endpoints: endpointsJson });
 };
@@ -57,9 +59,10 @@ exports.getCommentsByArticleId = (req, res, next) => {
 };
 
 exports.addCommentForArticle = (req, res, next) => {
+  const { username, body } = req.body;
   const { article_id } = req.params;
-  const comment = req.body;
-  postCommentForArticle(article_id, comment)
+
+  postCommentForArticle(username, body, article_id)
     .then((comment) => {
       res.status(201).send({ comment });
     })
@@ -81,6 +84,14 @@ exports.deleteCommentByCommentId = (req, res, next) => {
   removeCommentByCommentId(comment_id)
     .then(() => {
       res.status(204).send();
+    })
+    .catch(next);
+};
+
+exports.getUsers = (req, res, next) => {
+  findUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch(next);
 };
