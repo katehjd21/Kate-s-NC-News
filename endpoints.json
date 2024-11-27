@@ -83,5 +83,78 @@
     "description": "serves a status 204 and no content",
     "queries": [],
     "exampleResponse": ""
+  },
+  "GET /api/articles?sort_by": {
+    "description": "serves an array of all articles sorted in descending order by value given in sort_by query. If not sort_by query is given, articles will be sorted by created_at date in descending order by default",
+    "valid sort_by queries": [
+      "author",
+      "article_id",
+      "title",
+      "topic",
+      "created_at",
+      "votes",
+      "article_img_url",
+      "comment_count"
+    ],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": "6",
+          "article_id": 2,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        }
+      ]
+    }
+  },
+  "GET /api/articles?order": {
+    "description": "serves an array of all articles sorted by created_at date in order value given in order query. If no order query is given, articles will be sorted by created_at date in descending order by default",
+    "valid order queries": ["asc", "desc"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": "6",
+          "article_id": 2,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        }
+      ]
+    }
+  },
+  "GET /api/articles?sort_by&order": {
+    "description": "serves an array of all articles sorted by value in sort_by query in the order value given in order query. If no sort_by or order query is given, articles will be sorted by created_at date in descending order by default",
+    "valid sort_by queries": [
+      "author",
+      "article_id",
+      "title",
+      "topic",
+      "created_at",
+      "votes",
+      "article_img_url",
+      "comment_count"
+    ],
+    "valid order queries": ["asc", "desc"],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": "6",
+          "article_id": 2,
+          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        }
+      ]
+    }
   }
 }
