@@ -117,6 +117,14 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test("404: responds with an appropriate error message if given an invalid endpoint", () => {
+    return request(app)
+      .get("/api/notAnEndpoint")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
@@ -214,6 +222,24 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  // test("400: responds with an appropriate error message when given an invalid article_id", () => {
+  //   return request(app)
+  //     .patch("/api/articles/notAnId/comments")
+  //     .send(newComment)
+  //     .expect(400)
+  //     .then(({ body }) => {
+  //       expect(body.msg).toBe("400: Not found");
+  //     });
+  // });
+  test("404: responds with an appropriate error message when given a valid but non-existent article_id", () => {
+    return request(app)
+      .patch("/api/articles/99999/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
       });
   });
 });
@@ -319,6 +345,35 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("400: Bad request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("200: responds with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("404: responds with an appropriate error message if given an invalid endpoint", () => {
+    return request(app)
+      .get("/api/notAnEndpoint")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
       });
   });
 });

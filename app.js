@@ -9,6 +9,7 @@ const {
   addCommentForArticle,
   updateVoteByArticleId,
   deleteCommentByCommentId,
+  getUsers,
 } = require("./controllers/nc-news-controllers");
 const {
   psqlErrorHandler,
@@ -33,6 +34,8 @@ app.post("/api/articles/:article_id/comments", addCommentForArticle);
 app.patch("/api/articles/:article_id", updateVoteByArticleId);
 
 app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
+
+app.get("/api/users", getUsers);
 
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "404: Not found" });
