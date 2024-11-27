@@ -16,9 +16,9 @@ exports.retrieveArticleById = (articleId) => {
   });
 };
 
-exports.findArticles = (sort_by = "created_at", order = "desc") => {
+exports.findArticles = (sort_by = "created_at", order = "desc", topic) => {
   let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(*) AS comment_count 
-  FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id`;
+  FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
 
   const validSortBy = [
     "author",
@@ -32,16 +32,22 @@ exports.findArticles = (sort_by = "created_at", order = "desc") => {
   ];
 
   const validOrder = ["asc", "desc"];
+  const queryValues = [];
+
+  if (topic) {
+    queryValues.push(topic);
+    queryString += ` WHERE topic = $1`;
+  }
 
   if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
     return Promise.reject({ status: 400, msg: "400: Bad request" });
   }
 
   if (sort_by && order) {
-    queryString += ` ORDER BY ${sort_by} ${order}`;
+    queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
   }
 
-  return db.query(queryString).then(({ rows }) => {
+  return db.query(queryString, queryValues).then(({ rows }) => {
     return rows;
   });
 };

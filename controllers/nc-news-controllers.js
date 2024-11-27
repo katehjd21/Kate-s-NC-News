@@ -1,5 +1,5 @@
 const endpointsJson = require("../endpoints.json");
-const { findTopics } = require("../models/topics.models");
+const { findTopics, checkTopicExists } = require("../models/topics.models");
 const {
   retrieveArticleById,
   findArticles,
@@ -36,9 +36,15 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const { sort_by, order } = req.query;
-  findArticles(sort_by, order)
-    .then((articles) => {
+  const { sort_by, order, topic } = req.query;
+  const promises = [findArticles(sort_by, order, topic)];
+
+  if (topic) {
+    promises.push(checkTopicExists(topic));
+  }
+
+  Promise.all(promises)
+    .then(([articles]) => {
       res.status(200).send({ articles });
     })
     .catch(next);
