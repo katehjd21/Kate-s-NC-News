@@ -3,11 +3,11 @@ const { findTopics, checkTopicExists } = require("../models/topics.models");
 const {
   retrieveArticleById,
   findArticles,
+  checkArticleIdExists,
   patchVoteByArticleId,
 } = require("../models/articles.models");
 const {
   fetchCommentsByArticleId,
-  checkArticleIdExists,
   postCommentForArticle,
   removeCommentByCommentId,
 } = require("../models/comments.models");
@@ -68,9 +68,14 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.addCommentForArticle = (req, res, next) => {
   const { username, body } = req.body;
   const { article_id } = req.params;
+  const promises = [checkArticleIdExists(article_id)];
 
-  postCommentForArticle(username, body, article_id)
-    .then((comment) => {
+  if (article_id) {
+    promises.push(postCommentForArticle(username, body, article_id));
+  }
+  Promise.all(promises)
+
+    .then(([_, comment]) => {
       res.status(201).send({ comment });
     })
     .catch(next);
@@ -79,6 +84,7 @@ exports.addCommentForArticle = (req, res, next) => {
 exports.updateVoteByArticleId = (req, res, next) => {
   const { inc_votes } = req.body;
   const { article_id } = req.params;
+
   patchVoteByArticleId(inc_votes, article_id)
     .then((article) => {
       res.status(200).send({ article });

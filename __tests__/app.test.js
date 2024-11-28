@@ -50,21 +50,50 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toEqual(
-          expect.objectContaining({
-            article_id: 1,
-            title: "Living in the shadow of a great man",
-            topic: "mitch",
-            author: "butter_bridge",
-            body: "I find this existence challenging",
-            created_at: expect.any(String),
-            votes: 100,
-            article_img_url:
-              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-          })
-        );
+        expect(body.article).toEqual({
+          author: "butter_bridge",
+          title: "Living in the shadow of a great man",
+          article_id: 1,
+          topic: "mitch",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          comment_count: 11,
+        });
       });
   });
+
+  test("200: responds with the appropriate article by the given id with a comment_count property included", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toHaveProperty("comment_count");
+        expect(article.comment_count).toBe(11);
+      });
+  });
+  test("200: responds with the appropriate article by the given id with a comment_count of 0, if the article has no comments", () => {
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toEqual({
+          author: "icellusedkars",
+          title: "Sony Vaio; or, The Laptop",
+          article_id: 2,
+          topic: "mitch",
+          created_at: "2020-10-16T05:03:00.000Z",
+          votes: 0,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          comment_count: 0,
+        });
+      });
+  });
+
   test("GET:400 responds with an appropriate error message when given an invalid id", () => {
     return request(app)
       .get("/api/articles/not-an-id")
@@ -100,7 +129,7 @@ describe("GET /api/articles", () => {
               created_at: expect.any(String),
               votes: expect.any(Number),
               article_img_url: expect.any(String),
-              comment_count: expect.any(String),
+              comment_count: expect.any(Number),
             })
           );
         });
@@ -334,6 +363,14 @@ describe("GET /api/articles?topic", () => {
         expect(articles).toEqual([]);
       });
   });
+  test("200: responds with an array of all articles if topic query is ommitted", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(13);
+      });
+  });
   test("404: responds with an appropriate error message when given a topic that doesn't exist in the topic query", () => {
     return request(app)
       .get("/api/articles?topic=banana")
@@ -441,18 +478,18 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("400: Bad request");
       });
   });
-  // test("400: responds with an appropriate error message when given an invalid article_id", () => {
-  //   return request(app)
-  //     .patch("/api/articles/notAnId/comments")
-  //     .send(newComment)
-  //     .expect(400)
-  //     .then(({ body }) => {
-  //       expect(body.msg).toBe("400: Not found");
-  //     });
-  // });
+  test("400: responds with an appropriate error message when given an invalid article_id", () => {
+    return request(app)
+      .post("/api/articles/notAnId/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
   test("404: responds with an appropriate error message when given a valid but non-existent article_id", () => {
     return request(app)
-      .patch("/api/articles/99999/comments")
+      .post("/api/articles/99999/comments")
       .send(newComment)
       .expect(404)
       .then(({ body }) => {
