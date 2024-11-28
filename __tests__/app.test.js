@@ -622,14 +622,6 @@ describe("GET /api/users", () => {
         });
       });
   });
-  test("404: responds with an appropriate error message if given an invalid endpoint", () => {
-    return request(app)
-      .get("/api/notAnEndpoint")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("404: Not found");
-      });
-  });
 });
 
 describe("General error handlers", () => {
