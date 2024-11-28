@@ -1,3 +1,8 @@
+//not found errors
+exports.notFoundErrorHandler = (req, res) => {
+  res.status(404).send({ msg: "404: Not found" });
+};
+
 //postgres errors
 exports.psqlErrorHandler = (err, req, res, next) => {
   if (err.code === "22P02" || err.code === "23502" || err.code === "23503") {

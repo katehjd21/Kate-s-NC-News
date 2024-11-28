@@ -48,6 +48,10 @@ Within these .env files, you will need to add PGDATABASE= with the correct datab
 
 - Once you have created these files and inserted the PGDATABASEs, run 'npm install' in your terminal. This will add all the packages you need for the project.
 
+### Create the Databases
+
+To create the developer and test databases, in your terminal run the command **npm run setup-dbs**
+
 ### 5. Seed the Database
 
 - To seed the developer database, run the **npm run seed** command in your terminal.

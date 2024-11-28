@@ -3,7 +3,7 @@ const request = require("supertest");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
-const app = require("../app");
+const app = require("../db/app");
 
 /* Set up your test imports here */
 
