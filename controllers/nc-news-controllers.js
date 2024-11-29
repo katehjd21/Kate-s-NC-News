@@ -12,7 +12,7 @@ const {
   removeCommentByCommentId,
 } = require("../models/comments.models");
 
-const { findUsers } = require("../models/users.models");
+const { findUsers, retrieveUsername } = require("../models/users.models");
 
 exports.getApi = (req, res) => {
   res.status(200).send({ endpoints: endpointsJson });
@@ -105,6 +105,15 @@ exports.getUsers = (req, res, next) => {
   findUsers()
     .then((users) => {
       res.status(200).send({ users });
+    })
+    .catch(next);
+};
+
+exports.getUsername = (req, res, next) => {
+  const { username } = req.params;
+  retrieveUsername(username)
+    .then((user) => {
+      res.status(200).send({ user });
     })
     .catch(next);
 };

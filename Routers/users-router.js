@@ -1,6 +1,8 @@
 const usersRouter = require("express").Router();
-const { getUsers } = require("../controllers/nc-news-controllers");
+const { getUsers, getUsername } = require("../controllers/nc-news-controllers");
 
 usersRouter.get("/", getUsers);
+
+usersRouter.get("/:username", getUsername);
 
 module.exports = usersRouter;

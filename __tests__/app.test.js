@@ -624,6 +624,31 @@ describe("GET /api/users", () => {
   });
 });
 
+describe("GET /api/users/:username", () => {
+  test("200: responds with the appropriate user object for the username given", () => {
+    return request(app)
+      .get("/api/users/lurker")
+      .expect(200)
+      .then(({ body }) => {
+        const { user } = body;
+        expect(user).toEqual({
+          username: "lurker",
+          name: "do_nothing",
+          avatar_url:
+            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        });
+      });
+  });
+  test("404: responds with an appropriate error message when passed a non-existent username", () => {
+    return request(app)
+      .get("/api/users/happyBunny123")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
+      });
+  });
+});
+
 describe("General error handlers", () => {
   test("404: responds with an appropriate error message when given an invalid endpoint", () => {
     return request(app)

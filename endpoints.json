@@ -119,7 +119,7 @@
     }
   },
   "GET /api/articles/:article_id": {
-    "description": "serves an object containing the article matching the article_id",
+    "description": "serves an article matching the article_id",
     "queries": [],
     "exampleResponse": {
       "article_id": 1,
@@ -131,6 +131,20 @@
       "votes": 100,
       "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       "comment_count": 11
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an object with the updated article",
+    "queries": [],
+    "exampleResponse": {
+      "title": "Student SUES Mitch!",
+      "topic": "mitch",
+      "author": "rogersop",
+      "body": "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+      "created_at": "2018-05-30T15:59:13.341Z",
+      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      "votes": 8,
+      "article_id": 4
     }
   },
   "GET /api/articles/:article_id/comments": {
@@ -157,23 +171,30 @@
       "created_at": "2018-05-30T15:59:13.341Z"
     }
   },
-  "PATCH /api/articles/:article_id": {
-    "description": "serves an object with the updated article",
-    "queries": [],
-    "exampleResponse": {
-      "title": "Student SUES Mitch!",
-      "topic": "mitch",
-      "author": "rogersop",
-      "body": "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
-      "created_at": "2018-05-30T15:59:13.341Z",
-      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-      "votes": 8,
-      "article_id": 4
-    }
-  },
+
   "DELETE /api/comments/:comment_id": {
     "description": "serves a status 204 and no content",
     "queries": [],
     "exampleResponse": ""
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": [
+      {
+        "username": "lurker",
+        "name": "do_nothing",
+        "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+      }
+    ]
+  },
+  "GET /api/users/:username": {
+    "description": "serves a user matching the username",
+    "queries": [],
+    "exampleResponse": {
+      "username": "lurker",
+      "name": "do_nothing",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+    }
   }
 }
