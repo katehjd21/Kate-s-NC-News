@@ -60,6 +60,7 @@ describe("GET /api/articles/:article_id", () => {
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
           comment_count: 11,
+          body: "I find this existence challenging",
         });
       });
   });
@@ -76,19 +77,20 @@ describe("GET /api/articles/:article_id", () => {
   });
   test("200: responds with the appropriate article by the given id with a comment_count of 0, if the article has no comments", () => {
     return request(app)
-      .get("/api/articles/2")
+      .get("/api/articles/4")
       .expect(200)
       .then(({ body }) => {
         const { article } = body;
         expect(article).toEqual({
-          author: "icellusedkars",
-          title: "Sony Vaio; or, The Laptop",
-          article_id: 2,
+          author: "rogersop",
+          title: "Student SUES Mitch!",
+          article_id: 4,
           topic: "mitch",
-          created_at: "2020-10-16T05:03:00.000Z",
+          created_at: "2020-05-06T01:14:00.000Z",
           votes: 0,
           article_img_url:
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
           comment_count: 0,
         });
       });
@@ -377,6 +379,110 @@ describe("GET /api/articles?topic", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("404: Not found");
+      });
+  });
+});
+
+describe("POST /api/articles", () => {
+  test("201: responds with the newly added article", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "Happy Go Lucky",
+      body: "It's hard to know what to write!",
+      topic: "paper",
+      article_img_url:
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toMatchObject({
+          author: "butter_bridge",
+          title: "Happy Go Lucky",
+          body: "It's hard to know what to write!",
+          topic: "paper",
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          article_id: expect.any(Number),
+          votes: 0,
+          created_at: expect.any(String),
+          comment_count: 0,
+        });
+      });
+  });
+  test("responds with newly added article with default article_img_url if not provided", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "Happy Go Lucky",
+      body: "It's hard to know what to write!",
+      topic: "paper",
+    };
+    const defaultArticleUrl =
+      "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700";
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(({ body }) => {
+        const { article } = body;
+        expect(article.article_img_url).toBe(defaultArticleUrl);
+      });
+  });
+  test("400: responds with an appropriate error message when the request body does not contain an author", () => {
+    const newArticle = {
+      title: "Happy Go Lucky",
+      body: "It's hard to know what to write!",
+      topic: "paper",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("400: responds with an appropriate error message when the request body does not contain a title", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      body: "It's hard to know what to write!",
+      topic: "paper",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("400: responds with an appropriate error message when the request body does not contain a body", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "Happy Go Lucky",
+      topic: "paper",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("400: responds with an appropriate error message when the request body does not contain a topic", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "Happy Go Lucky",
+      body: "It's hard to know what to write!",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
       });
   });
 });
