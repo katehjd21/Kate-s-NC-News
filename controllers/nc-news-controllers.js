@@ -10,6 +10,7 @@ const {
   fetchCommentsByArticleId,
   postCommentForArticle,
   removeCommentByCommentId,
+  updateVoteByCommentId,
 } = require("../models/comments.models");
 
 const { findUsers, retrieveUsername } = require("../models/users.models");
@@ -114,6 +115,16 @@ exports.getUsername = (req, res, next) => {
   retrieveUsername(username)
     .then((user) => {
       res.status(200).send({ user });
+    })
+    .catch(next);
+};
+
+exports.updateCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  updateVoteByCommentId(inc_votes, comment_id)
+    .then((comment) => {
+      res.status(200).send({ comment });
     })
     .catch(next);
 };

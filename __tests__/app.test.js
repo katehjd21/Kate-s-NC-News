@@ -381,6 +381,89 @@ describe("GET /api/articles?topic", () => {
   });
 });
 
+describe("PATCH /api/articles/:article_id", () => {
+  const incVotes = { inc_votes: 8 };
+  const decVotes = { inc_votes: -5 };
+  test("200: responds with the updated article object with the vote property incremented when inc_votes is a positive integer", () => {
+    return request(app)
+      .patch("/api/articles/4")
+      .send(incVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            title: "Student SUES Mitch!",
+            topic: "mitch",
+            author: "rogersop",
+            body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
+            created_at: expect.any(String),
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            votes: 8,
+            article_id: 4,
+          })
+        );
+      });
+  });
+  test("200: responds with the updated article object with the vote property decremented when inc_votes is a negative integer", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send(decVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual(
+          expect.objectContaining({
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: expect.any(String),
+            votes: 95,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            article_id: 1,
+          })
+        );
+      });
+  });
+  test("400: responds with an appropriate error message when request body does not contain the correct field", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ number: 9 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("400: responds with an appropriate error message when request body has a valid body field but the value of the field is invalid", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "String" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("400: responds with an appropriate error message when given an invalid article_id", () => {
+    return request(app)
+      .patch("/api/articles/notAnId")
+      .send(incVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("404: responds with an appropriate error message when given a valid but non-existent article_id", () => {
+    return request(app)
+      .patch("/api/articles/99999")
+      .send(decVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with an array of comments for the given article_id", () => {
     return request(app)
@@ -498,89 +581,6 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("PATCH /api/articles/:article_id", () => {
-  const incVotes = { inc_votes: 8 };
-  const decVotes = { inc_votes: -5 };
-  test("200: responds with the updated article object with the vote property incremented when inc_votes is a positive integer", () => {
-    return request(app)
-      .patch("/api/articles/4")
-      .send(incVotes)
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.article).toEqual(
-          expect.objectContaining({
-            title: "Student SUES Mitch!",
-            topic: "mitch",
-            author: "rogersop",
-            body: "We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages",
-            created_at: expect.any(String),
-            article_img_url:
-              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-            votes: 8,
-            article_id: 4,
-          })
-        );
-      });
-  });
-  test("200: responds with the updated article object with the vote property decremented when inc_votes is a negative integer", () => {
-    return request(app)
-      .patch("/api/articles/1")
-      .send(decVotes)
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.article).toEqual(
-          expect.objectContaining({
-            title: "Living in the shadow of a great man",
-            topic: "mitch",
-            author: "butter_bridge",
-            body: "I find this existence challenging",
-            created_at: expect.any(String),
-            votes: 95,
-            article_img_url:
-              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-            article_id: 1,
-          })
-        );
-      });
-  });
-  test("400: responds with an appropriate error message when request body does not contain the correct field", () => {
-    return request(app)
-      .patch("/api/articles/1")
-      .send({ number: 9 })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("400: Bad request");
-      });
-  });
-  test("400: responds with an appropriate error message when request body has a valid body field but the value of the field is invalid", () => {
-    return request(app)
-      .patch("/api/articles/1")
-      .send({ inc_votes: "String" })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("400: Bad request");
-      });
-  });
-  test("400: responds with an appropriate error message when given an invalid article_id", () => {
-    return request(app)
-      .patch("/api/articles/notAnId")
-      .send(incVotes)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("400: Bad request");
-      });
-  });
-  test("404: responds with an appropriate error message when given a valid but non-existent article_id", () => {
-    return request(app)
-      .patch("/api/articles/99999")
-      .send(decVotes)
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("404: Not found");
-      });
-  });
-});
-
 describe("DELETE /api/comments/:comment_id", () => {
   test("204: responds with a no content message when comment successfully deleted", () => {
     return request(app).delete("/api/comments/3").expect(204);
@@ -599,6 +599,83 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("400: Bad request");
+      });
+  });
+});
+
+describe("PATCH /api/comments/:comment_id", () => {
+  const incVotes = { inc_votes: 3 };
+  const decVotes = { inc_votes: -3 };
+  test("200: responds with the updated comment object with the vote property incremented when inc_votes is a positive integer", () => {
+    return request(app)
+      .patch("/api/comments/10")
+      .send(incVotes)
+      .expect(200)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toEqual(
+          expect.objectContaining({
+            body: "git push origin master",
+            votes: 3,
+            author: "icellusedkars",
+            article_id: 3,
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("200: responds with the updated comment object with the vote property decremented when inc_votes is a negative integer", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send(decVotes)
+      .expect(200)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toEqual(
+          expect.objectContaining({
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 13,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+  test("400: responds with an appropriate error message when request body does not contain the correct field", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ number: 9 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("400: responds with an appropriate error message when request body has a valid body field but the value of the field is invalid", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: "String" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("400: responds with an appropriate error message when given an invalid comment_id", () => {
+    return request(app)
+      .patch("/api/comments/notAnId")
+      .send(incVotes)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad request");
+      });
+  });
+  test("404: responds with an appropriate error message when given a valid but non-existent comment_id", () => {
+    return request(app)
+      .patch("/api/comments/99999")
+      .send(decVotes)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: Not found");
       });
   });
 });
