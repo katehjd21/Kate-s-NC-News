@@ -5,6 +5,7 @@ const {
   findArticles,
   checkArticleIdExists,
   patchVoteByArticleId,
+  postNewArticle,
 } = require("../models/articles.models");
 const {
   fetchCommentsByArticleId,
@@ -125,6 +126,19 @@ exports.updateCommentById = (req, res, next) => {
   updateVoteByCommentId(inc_votes, comment_id)
     .then((comment) => {
       res.status(200).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.addArticle = (req, res, next) => {
+  const { author, title, body, topic, article_img_url } = req.body;
+  postNewArticle(author, title, body, topic, article_img_url)
+    .then((newArticle) => {
+      const { article_id } = newArticle;
+      return retrieveArticleById(article_id);
+    })
+    .then((article) => {
+      res.status(201).send({ article });
     })
     .catch(next);
 };

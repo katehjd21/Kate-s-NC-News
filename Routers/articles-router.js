@@ -5,9 +5,10 @@ const {
   updateVoteByArticleId,
   getCommentsByArticleId,
   addCommentForArticle,
+  addArticle,
 } = require("../controllers/nc-news-controllers");
 
-articlesRouter.get("/", getArticles);
+articlesRouter.route("/").get(getArticles).post(addArticle);
 
 articlesRouter
   .route("/:article_id")
