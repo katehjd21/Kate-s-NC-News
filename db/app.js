@@ -1,12 +1,14 @@
 const express = require("express");
 const app = express();
-
+const cors = require("cors");
 const {
   psqlErrorHandler,
   customErrorHandler,
   serverErrorHandler,
   notFoundErrorHandler,
 } = require("../Errors/error- handlers");
+
+app.use(cors());
 
 app.use(express.json());
 
