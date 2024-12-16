@@ -6,6 +6,7 @@ const {
   checkArticleIdExists,
   patchVoteByArticleId,
   postNewArticle,
+  countArticles,
 } = require("../models/articles.models");
 const {
   fetchCommentsByArticleId,
@@ -38,16 +39,20 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const { sort_by, order, topic } = req.query;
-  const promises = [findArticles(sort_by, order, topic)];
+  const { sort_by, order, topic, limit, p } = req.query;
+  const promises = [
+    findArticles(sort_by, order, topic, limit, p),
+    countArticles(topic),
+  ];
 
   if (topic) {
     promises.push(checkTopicExists(topic));
   }
 
   Promise.all(promises)
-    .then(([articles]) => {
-      res.status(200).send({ articles });
+    .then(([articles, count, _]) => {
+      const { total_count } = count;
+      res.status(200).send({ articles, total_count });
     })
     .catch(next);
 };

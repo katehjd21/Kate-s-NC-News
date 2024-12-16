@@ -27,7 +27,13 @@ exports.retrieveArticleById = (articleId) => {
   });
 };
 
-exports.findArticles = (sort_by = "created_at", order = "desc", topic) => {
+exports.findArticles = (
+  sort_by = "created_at",
+  order = "desc",
+  topic,
+  limit = 10,
+  p = 1
+) => {
   let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count 
   FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
 
@@ -58,8 +64,32 @@ exports.findArticles = (sort_by = "created_at", order = "desc", topic) => {
     queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
   }
 
+  if (isNaN(limit) || isNaN(p)) {
+    return Promise.reject({ status: 400, msg: "400: Bad request" });
+  }
+
+  const offset = (p - 1) * limit;
+
+  queryString += ` LIMIT ${limit}`;
+
+  queryString += ` OFFSET ${offset}`;
+
   return db.query(queryString, queryValues).then(({ rows }) => {
     return rows;
+  });
+};
+
+exports.countArticles = (topic) => {
+  let queryString = `SELECT COUNT(article_id)::INT AS total_count FROM articles`;
+  const queryValues = [];
+
+  if (topic) {
+    queryValues.push(topic);
+    queryString += ` WHERE topic = $1`;
+  }
+
+  return db.query(queryString, queryValues).then(({ rows }) => {
+    return rows[0];
   });
 };
 
