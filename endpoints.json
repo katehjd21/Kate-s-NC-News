@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles sorted by date created in descending order",
+    "description": "serves an array of all articles sorted by created_at date in descending order by default if no sort_by or order query given",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -100,24 +100,7 @@
       ]
     }
   },
-  "GET /api/articles?topic": {
-    "description": "serves a filtered array of articles where the article topic matches the topic query",
-    "example query": "/api/articles?topic=cooking",
-    "exampleResponse": {
-      "articles": [
-        {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "votes": 0,
-          "comment_count": "6",
-          "article_id": 2,
-          "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-        }
-      ]
-    }
-  },
+
   "POST /api/articles": {
     "description": "serves a newly posted article",
     "queries": [],
