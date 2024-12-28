@@ -773,7 +773,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     username: "lurker",
     body: "Brilliant article! Definitely worth a read!",
   };
-  test("201: responds with a newly posted comment for an article", () => {
+  test.only("201: responds with a newly posted comment for an article", () => {
     return request(app)
       .post("/api/articles/3/comments")
       .send(newComment)

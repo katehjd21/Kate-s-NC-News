@@ -29,36 +29,18 @@ Node v22.7.0
 
 To clone this repo to your local machine:
 
-[GitHub: Kates-NC-News Link](https://github.com/katehjd21/Kates-NC-News.git "GitHub Kates-NC-News Link")
+1. Copy this link to your clipboard:
+   [GitHub: Kates-NC-News Link](https://github.com/katehjd21/Kates-NC-News.git "GitHub Kates-NC-News Link")
 
-Use the the git clone command in your terminal with the above link. Make sure you are in the correct file you want to be in before cloning the repository down!
+2. Ensure you are in correct file in your terminal before cloning the repository down by using 'cd' ('change directory') to access whichever file you need to.
 
-Once you have cloned this repository to your local machine, you will need to complete a couple more setup tasks.
+3. In your terminal, check you are in the correct file by using 'pwd' ('print working directory') which will tell you where you are currently located. If you are in the correct file, use the git clone command in your terminal with the above link.
 
-### 3. Creating .env Files
+4. Once you have cloned this repository to your local machine, you will need to complete a couple more setup tasks.
 
-Create two .env files: **.env.test** and **.env.development**.
+### Installing Dependencies
 
-Within these .env files, you will need to add PGDATABASE= with the correct database name for that environment.
-
-- .env.test => PGDATABASE=nc_news_test
-- .env.development => PGDATABASE=nc_news
-
-### 4. Install Dependencies
-
-- Once you have created these files and inserted the PGDATABASEs, run 'npm install' in your terminal. This will add all the packages you need for the project.
-
-### Create the Databases
-
-To create the developer and test databases, in your terminal run the command **npm run setup-dbs**
-
-### 5. Seed the Database
-
-- To seed the developer database, run the **npm run seed** command in your terminal.
-
-### 6. Testing
-
-- To run the test file, use the **npm test app** command. This will automatically seed the test database every time you run the test file.
+-Once you have successfully cloned and opened this repository on your local computer, run 'npm install' in your terminal. This will add all the packages you need for the project.
 
 ### You should now all be set up to begin! Thank you for taking the time to look at my project!
 
